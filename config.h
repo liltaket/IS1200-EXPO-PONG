@@ -5,7 +5,7 @@
 #define PADDLE_HEIGHT 40
 #define BALL_SIZE     5
 
-#define PADDLE_SPEED  3
+#define PADDLE_SPEED  1
 #define BALL_SPEED_X  1
 #define BALL_SPEED_Y  1
 
