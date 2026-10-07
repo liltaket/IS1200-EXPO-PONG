@@ -3,10 +3,6 @@
 
 #define VGA_BUFFER ((volatile uint8_t *)0x08000000) //Skapar en array till framebuffern som är en pekare till adressen 0x08000000 och har 8 bitar per pixel 
 
-// Använder RRR GGG BB  
-#define SVART 0x00 
-#define VITT 0xFF
-
 
 // Räknar ut vilken plats i minnet som motsvara pixeln kordinat och sätter färgen på den pixeln
 void rita_pixel(int x, int y, uint8_t farg){
