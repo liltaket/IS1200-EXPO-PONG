@@ -8,3 +8,7 @@
 #define PADDLE_SPEED  3
 #define BALL_SPEED_X  2
 #define BALL_SPEED_Y  2
+
+// Använder RRR GGG BB  
+#define SVART 0x00 
+#define VITT 0xFF
