@@ -30,7 +30,7 @@ void clear_screen(void)
 }
 
 //Ritar en rektangel på skärmen 
-void rita_paddel(int x, int y)
+void rita_paddel(int x, int y, uint8_t farg)
 {
     for (int dy = 0; dy < PADDLE_HEIGHT; dy++) {
 
@@ -44,13 +44,13 @@ void rita_paddel(int x, int y)
 }
 
 //Ritar bollen på skärmen
-void rita_boll(int x, int y)
+void rita_boll(int x, int y, uint8_t farg)
 {
     for (int y_skillnad = 0; y_skillnad < BALL_SIZE; y_skillnad++) {
 
         for (int x_skillnad = 0; x_skillnad < BALL_SIZE; x_skillnad++) {
 
-            rita_pixel(x + x_skillnad, y + y_skillnad, VITT);
+            rita_pixel(x + x_skillnad, y + y_skillnad, farg);
         }
 
     }
