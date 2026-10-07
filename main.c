@@ -245,8 +245,6 @@ static void check_goal(void)
 /* Draw game */
 static void draw_game(void)
 {
-    rita_paddel(left_x, left_y, VITT);
-    rita_paddel(right_x, right_y, VITT);
     rita_boll(ball_x, ball_y, VITT);
 }
 
@@ -260,14 +258,13 @@ int main(void)
     set_displays(5, 0);
 
     clear_screen();
-
+    rita_paddel(left_x, left_y, VITT);
+    rita_paddel(right_x, right_y, VITT);
 
     while (1)
     {
        uint32_t sw = read_switches();
-
        if (sw & (1u << 6)) reset_score();
-
        if (sw & (1u << 7)) 
        {
           delay();
@@ -279,13 +276,28 @@ int main(void)
           delay();
           continue;
        }
+
+       int old_left_y = left_y;
+       int old_right_y = right_y;
           
-       rita_paddel(left_x, left_y, SVART);
-       rita_paddel(right_x, right_y, SVART);
+      
+      
        rita_boll(ball_x, ball_y, SVART);
 
         move_paddles(sw);
         clamp_paddles();
+
+       if (left_y != old_left_y)
+       {
+          rita_paddel(left_x, old_left_y, SVART);
+          rita_paddel(left_x, left_y, VITT);
+       }
+
+       if (right_y != old_right_y)
+       {
+          rita_paddel(right_x, old_right_y, SVART);
+          rita_paddel(right_x, right_y, VITT);
+       }
 
         move_ball();
 
