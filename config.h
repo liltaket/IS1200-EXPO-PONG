@@ -6,8 +6,8 @@
 #define BALL_SIZE     5
 
 #define PADDLE_SPEED  3
-#define BALL_SPEED_X  2
-#define BALL_SPEED_Y  2
+#define BALL_SPEED_X  1
+#define BALL_SPEED_Y  1
 
 // Använder RRR GGG BB  
 #define SVART 0x00 
