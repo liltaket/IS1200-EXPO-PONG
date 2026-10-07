@@ -1,3 +1,4 @@
+
 /* main.c
 
    Based on IS1200 Lab 3 code.
@@ -8,27 +9,14 @@
 #include "config.h"
 
 void clear_screen(void);
-
 void rita_pixel(int x, int y, uint8_t farg);
 void rita_paddel(int x, int y, uint8_t farg);
 void rita_boll(int x, int y, uint8_t farg);
 
-
-/* Switches */
+// Switcharna
 #define SWITCHES (*(volatile uint32_t *)0x04000010)
 
-
-/*
- * boot.S förväntar sig att denna funktion finns.
- * Vi använder inga interrupts i spelet nu.
- */
-void handle_interrupt(unsigned cause)
-{
-    (void)cause;
-}
-
-
-/* 7-segment digits */
+// Siffror till 7-segment
 static const int digits[10] = {
     0xC0, // 0
     0xF9, // 1
@@ -42,9 +30,7 @@ static const int digits[10] = {
     0x90  // 9
 };
 
-
-/* Game positions */
-
+// Startpositioner och poäng
 int left_x = 10;
 int left_y = 100;
 
@@ -60,21 +46,23 @@ int ball_dy = BALL_SPEED_Y;
 static int left_score = 0;
 static int right_score = 0;
 
+// Krävs av boot.S, men vi kör utan interrupts
 
-/*
- * Delay styr spelets hastighet.
- *
- * Större nummer = långsammare spel
- * Mindre nummer = snabbare spel
- */
+void handle_interrupt(unsigned cause)
+{
+    (void)cause;
+}
+
+// Små hjälpfunktioner
+
+// Styr hur snabbt spelet går
 static void delay(void)
 {
     for (volatile int i = 0; i < 50000; i++) {
     }
 }
 
-
-/* Write one digit to one of the six 7-segment displays. */
+// Skriv en siffra på displayen
 void set_displays(int display_number, int value)
 {
     volatile int *display =
@@ -83,60 +71,31 @@ void set_displays(int display_number, int value)
     *display = digits[value];
 }
 
-
-/* Read switches */
+// Läs av switcharna
 static uint32_t read_switches(void)
 {
     return SWITCHES;
 }
 
+// Flytta paddlar och boll
 
-/* Move paddles */
+// Spelarnas knappar flyttar paddlarna
 static void move_paddles(uint32_t sw)
 {
-    /* Left paddle up */
     if (sw & (1u << 8))
         left_y -= PADDLE_SPEED;
 
-    /* Left paddle down */
     if (!(sw & (1u << 9)))
         left_y += PADDLE_SPEED;
 
-    /* Right paddle up */
     if (sw & (1u << 1))
         right_y -= PADDLE_SPEED;
 
-    /* Right paddle down */
     if (!(sw & (1u << 0)))
         right_y += PADDLE_SPEED;
 }
-static void uppdatera_paddel(int x, int old_y, int new_y)
-{
-    if (new_y > old_y) { // ner
-        for (int y = old_y; y < new_y; y++)
-            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
-                rita_pixel(x + xoff, y, SVART);
 
-        for (int y = old_y + PADDLE_HEIGHT;
-             y < new_y + PADDLE_HEIGHT; y++)
-            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
-                rita_pixel(x + xoff, y, VITT);
-    }
-
-    else if (new_y < old_y) { // upp
-        for (int y = new_y + PADDLE_HEIGHT;
-             y < old_y + PADDLE_HEIGHT; y++)
-            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
-                rita_pixel(x + xoff, y, SVART);
-
-        for (int y = new_y; y < old_y; y++)
-            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
-                rita_pixel(x + xoff, y, VITT);
-    }
-}
-
-
-/* Keep paddles inside screen */
+// Håll paddlarna inom skärmen
 static void clamp_paddles(void)
 {
     if (left_y < 0)
@@ -152,16 +111,16 @@ static void clamp_paddles(void)
         right_y = SCREEN_HEIGHT - PADDLE_HEIGHT;
 }
 
-
-/* Move ball */
+// Move the ball
 static void move_ball(void)
 {
     ball_x += ball_dx;
     ball_y += ball_dy;
 }
 
+// Kolla krockar
 
-/* Check top and bottom wall */
+// Studsa mot tak och golv
 static void check_wall_collision(void)
 {
     if (ball_y <= 0) {
@@ -175,72 +134,61 @@ static void check_wall_collision(void)
     }
 }
 
-
-/* Check paddle collision */
+// Studsa mot paddlarna
 static void check_paddle_collision(void)
 {
-    /* Left paddle */
     if (ball_dx < 0 &&
         ball_x <= left_x + PADDLE_WIDTH &&
         ball_x + BALL_SIZE >= left_x &&
         ball_y + BALL_SIZE >= left_y &&
         ball_y <= left_y + PADDLE_HEIGHT) {
-
         ball_x = left_x + PADDLE_WIDTH;
         ball_dx = -ball_dx;
     }
 
-
-    /* Right paddle */
     if (ball_dx > 0 &&
         ball_x + BALL_SIZE >= right_x &&
         ball_x <= right_x + PADDLE_WIDTH &&
         ball_y + BALL_SIZE >= right_y &&
         ball_y <= right_y + PADDLE_HEIGHT) {
-
         ball_x = right_x - BALL_SIZE;
         ball_dx = -ball_dx;
     }
 }
 
+// Poäng och omstart
 
-/* Reset ball to middle */
+// Ny boll i mitten, slumpa riktning
 static void reset_ball()
 {
-   static uint8_t rng = 73;
-   rng = (uint8_t)(rng * 17u + 43u);
+    static uint8_t rng = 73;
+    rng = (uint8_t)(rng * 17u + 43u);
 
     ball_x = SCREEN_WIDTH / 2;
     ball_y = SCREEN_HEIGHT / 2;
 
-    if (rng & 0x80) 
-    {
-       ball_dx = BALL_SPEED_X;
+    if (rng & 0x80) {
+        ball_dx = BALL_SPEED_X;
+    } else {
+        ball_dx = -BALL_SPEED_X;
     }
-    else
-    {
-       ball_dx = -BALL_SPEED_X;
-    }
-
 }
 
+// Börja om poängen
 static void reset_score()
 {
-   left_score = 0;
-   right_score = 0;
-   set_displays(0, 0);
-   set_displays(1, 0);
-   set_displays(4, 0);
-   set_displays(5, 0);
+    left_score = 0;
+    right_score = 0;
+    set_displays(0, 0);
+    set_displays(1, 0);
+    set_displays(4, 0);
+    set_displays(5, 0);
 }
 
-
-/* Check if someone scored */
+// Ge poäng när bollen går ut
 static void check_goal(void)
 {
-    /* Ball leaves left side -> right player scores */
     if (ball_x < 0) {
-
         right_score++;
 
         if (right_score > 99)
@@ -252,10 +200,7 @@ static void check_goal(void)
         reset_ball();
     }
 
-
-    /* Ball leaves right side -> left player scores */
     if (ball_x + BALL_SIZE >= SCREEN_WIDTH) {
-
         left_score++;
 
         if (left_score > 99)
@@ -268,17 +213,43 @@ static void check_goal(void)
     }
 }
 
+// Rita ändringarna på skärmen
 
-/* Draw game */
+// Rita bara delen som har flyttats
+static void uppdatera_paddel(int x, int old_y, int new_y)
+{
+    if (new_y > old_y) {
+        for (int y = old_y; y < new_y; y++)
+            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
+                rita_pixel(x + xoff, y, SVART);
+
+        for (int y = old_y + PADDLE_HEIGHT;
+             y < new_y + PADDLE_HEIGHT; y++)
+            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
+                rita_pixel(x + xoff, y, VITT);
+    } else if (new_y < old_y) {
+        for (int y = new_y + PADDLE_HEIGHT;
+             y < old_y + PADDLE_HEIGHT; y++)
+            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
+                rita_pixel(x + xoff, y, SVART);
+
+        for (int y = new_y; y < old_y; y++)
+            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
+                rita_pixel(x + xoff, y, VITT);
+    }
+}
+
+// Rita nya bollpositionen
 static void draw_game(void)
 {
     rita_boll(ball_x, ball_y, VITT);
 }
 
-/* Main */
+// Själva spelet
+
 int main(void)
 {
-    /* Start score */
+    // Nollor på displayerna från start
     set_displays(0, 0);
     set_displays(1, 0);
     set_displays(4, 0);
@@ -288,34 +259,32 @@ int main(void)
     rita_paddel(left_x, left_y, VITT);
     rita_paddel(right_x, right_y, VITT);
 
-    while (1)
-    {
-       uint32_t sw = read_switches();
-       if (sw & (1u << 6)) reset_score();
-       if (sw & (1u << 7)) 
-       {
-          delay();
-          continue;
-       }
+    while (1) {
+        uint32_t sw = read_switches();
 
-       if (left_score>= 5 || right_score >= 5) 
-       {
-          delay();
-          continue;
-       }
+        if (sw & (1u << 6))
+            reset_score();
 
-       int old_left_y = left_y;
-       int old_right_y = right_y;
-          
-      
-      
-       rita_boll(ball_x, ball_y, SVART);
+        if (sw & (1u << 7)) {
+            delay();
+            continue;
+        }
+
+        if (left_score >= 5 || right_score >= 5) {
+            delay();
+            continue;
+        }
+
+        int old_left_y = left_y;
+        int old_right_y = right_y;
+
+        // Sudda gamla bollen innan vi flyttar den
+        rita_boll(ball_x, ball_y, SVART);
 
         move_paddles(sw);
         clamp_paddles();
 
         uppdatera_paddel(left_x, old_left_y, left_y);
-
         uppdatera_paddel(right_x, old_right_y, right_y);
 
         move_ball();
@@ -326,13 +295,9 @@ int main(void)
 
         draw_game();
 
-        /*
-         * Vänta innan nästa frame.
-         * Detta ersätter timer interrupt.
-         */
+        // Lite väntan innan nästa frame
         delay();
     }
-
 
     return 0;
 }
