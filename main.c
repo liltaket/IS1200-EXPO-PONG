@@ -8,8 +8,8 @@
 #include "config.h"
 
 void clear_screen(void);
-void rita_paddel(int x, int y);
-void rita_boll(int x, int y);
+void rita_paddel(int x, int y, uint8_t farg);
+void rita_boll(int x, int y, uint8_t farg);
 
 /* Switches */
 #define SWITCHES (*(volatile uint32_t *)0x04000010)
@@ -247,9 +247,9 @@ static void draw_game(void)
 {
     clear_screen();
 
-    rita_paddel(left_x, left_y);
-    rita_paddel(right_x, right_y);
-    rita_boll(ball_x, ball_y);
+    rita_paddel(left_x, left_y, VITT);
+    rita_paddel(right_x, right_y, VITT);
+    rita_boll(ball_x, ball_y, VITT);
 }
 
 
@@ -279,6 +279,9 @@ int main(void)
           delay();
           continue;
        }
+       rita_paddel(left_x, left_y, SVART);
+       rita_paddel(right_x, right_y, SVART);
+       rita_boll(ball_x, ball_y, SVART);
 
         move_paddles(sw);
         clamp_paddles();
