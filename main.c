@@ -180,11 +180,21 @@ static void check_paddle_collision(void)
 /* Reset ball to middle */
 static void reset_ball(int direction)
 {
+   static uint8_t rng = 73;
+   rng = (uint8_t)(rng * 17u + 43u);
+
     ball_x = SCREEN_WIDTH / 2;
     ball_y = SCREEN_HEIGHT / 2;
 
-    ball_dx = direction * BALL_SPEED_X;
-    ball_dy = BALL_SPEED_Y;
+    if (rng & 0x80) 
+    {
+       ball_dx = BALL_SPEED_X;
+    }
+    else
+    {
+       ball_dx = -BALL_SPEED_X;
+    }
+
 }
 
 
