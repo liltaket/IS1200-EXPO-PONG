@@ -178,7 +178,7 @@ static void check_paddle_collision(void)
 
 
 /* Reset ball to middle */
-static void reset_ball(int direction)
+static void reset_ball()
 {
    static uint8_t rng = 73;
    rng = (uint8_t)(rng * 17u + 43u);
@@ -197,6 +197,16 @@ static void reset_ball(int direction)
 
 }
 
+static void reset_score()
+{
+   left_score = 0;
+   right_score = 0;
+   set_displays(0, 0);
+   set_displays(1, 0);
+   set_displays(4, 0);
+   set_displays(5, 0);
+}
+
 
 /* Check if someone scored */
 static void check_goal(void)
@@ -212,7 +222,7 @@ static void check_goal(void)
         set_displays(0, right_score % 10);
         set_displays(1, (right_score / 10) % 10);
 
-        reset_ball(1);
+        reset_ball();
     }
 
 
@@ -227,7 +237,7 @@ static void check_goal(void)
         set_displays(4, left_score % 10);
         set_displays(5, (left_score / 10) % 10);
 
-        reset_ball(-1);
+        reset_ball();
     }
 }
 
@@ -257,7 +267,18 @@ int main(void)
 
     while (1)
     {
-        uint32_t sw = read_switches();
+       uint32_t sw = read_switches();
+
+       if (sw & (1u << 6))
+       {
+          reset_score();
+       }
+
+       if (sw & (1u << 7)) 
+       {
+          delay();
+          continue;
+       }
 
         move_paddles(sw);
         clamp_paddles();
