@@ -250,7 +250,6 @@ static void draw_game(void)
     rita_boll(ball_x, ball_y, VITT);
 }
 
-
 /* Main */
 int main(void)
 {
@@ -267,16 +266,20 @@ int main(void)
     {
        uint32_t sw = read_switches();
 
-       if (sw & (1u << 6))
-       {
-          reset_score();
-       }
+       if (sw & (1u << 6)) reset_score();
 
        if (sw & (1u << 7)) 
        {
           delay();
           continue;
        }
+
+       if (left_score>= 5 || right_score >= 5) 
+       {
+          delay();
+          continue;
+       }
+          
        rita_paddel(left_x, left_y, SVART);
        rita_paddel(right_x, right_y, SVART);
        rita_boll(ball_x, ball_y, SVART);
