@@ -8,8 +8,11 @@
 #include "config.h"
 
 void clear_screen(void);
+
+void rita_pixel(int x, int y, uint8_t farg);
 void rita_paddel(int x, int y, uint8_t farg);
 void rita_boll(int x, int y, uint8_t farg);
+
 
 /* Switches */
 #define SWITCHES (*(volatile uint32_t *)0x04000010)
@@ -106,6 +109,30 @@ static void move_paddles(uint32_t sw)
     /* Right paddle down */
     if (!(sw & (1u << 0)))
         right_y += PADDLE_SPEED;
+}
+static void uppdatera_paddel(int x, int old_y, int new_y)
+{
+    if (new_y > old_y) { // ner
+        for (int y = old_y; y < new_y; y++)
+            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
+                rita_pixel(x + xoff, y, SVART);
+
+        for (int y = old_y + PADDLE_HEIGHT;
+             y < new_y + PADDLE_HEIGHT; y++)
+            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
+                rita_pixel(x + xoff, y, VITT);
+    }
+
+    else if (new_y < old_y) { // upp
+        for (int y = new_y + PADDLE_HEIGHT;
+             y < old_y + PADDLE_HEIGHT; y++)
+            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
+                rita_pixel(x + xoff, y, SVART);
+
+        for (int y = new_y; y < old_y; y++)
+            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
+                rita_pixel(x + xoff, y, VITT);
+    }
 }
 
 
@@ -287,17 +314,9 @@ int main(void)
         move_paddles(sw);
         clamp_paddles();
 
-       if (left_y != old_left_y)
-       {
-          rita_paddel(left_x, old_left_y, SVART);
-          rita_paddel(left_x, left_y, VITT);
-       }
+        uppdatera_paddel(left_x, old_left_y, left_y);
 
-       if (right_y != old_right_y)
-       {
-          rita_paddel(right_x, old_right_y, SVART);
-          rita_paddel(right_x, right_y, VITT);
-       }
+        uppdatera_paddel(right_x, old_right_y, right_y);
 
         move_ball();
 
