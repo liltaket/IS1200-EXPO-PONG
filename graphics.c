@@ -32,7 +32,7 @@ void rita_paddel(int x, int y, uint8_t farg)
 
         for (int dx = 0; dx < PADDLE_WIDTH; dx++) {
 
-            rita_pixel(x + dx, y + dy, VITT);
+            rita_pixel(x + dx, y + dy, farg);
         }
 
     }
