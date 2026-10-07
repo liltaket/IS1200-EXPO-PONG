@@ -245,8 +245,6 @@ static void check_goal(void)
 /* Draw game */
 static void draw_game(void)
 {
-    clear_screen();
-
     rita_paddel(left_x, left_y, VITT);
     rita_paddel(right_x, right_y, VITT);
     rita_boll(ball_x, ball_y, VITT);
