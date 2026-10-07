@@ -11,7 +11,7 @@
 // Räknar ut vilken plats i minnet som motsvara pixeln kordinat och sätter färgen på den pixeln
 void rita_pixel(int x, int y, uint8_t farg){
     
-    if(x < 0 || x >= BREDDEN || y < 0 || y >= HOJDEN) return;
+    if(x < 0 || x >= SCREEN_WIDTH || y < 0 || y >= SCREEN_HEIGHT) return;
     VGA_BUFFER[y * SCREEN_WIDTH + x] = farg;  // Offseten till pixlarna i minnet
 }
 
