@@ -25,25 +25,16 @@ void clear_screen(void)
     }
 }
 
-// Draw the paddle
-void rita_paddel(int x, int y, uint8_t farg)
+// Draw the paddles and the ball
+void rita_fyrkant(int x, int y, size_x, size_y, uint8_t farg)
 {
-    for (int dy = 0; dy < PADDLE_HEIGHT; dy++) {
-        for (int dx = 0; dx < PADDLE_WIDTH; dx++) {
+    for (int dy = 0; dy < size_y; dy++) {
+        for (int dx = 0; dx < size_x; dx++) {
             rita_pixel(x + dx, y + dy, farg);
         }
     }
 }
 
-// Rita bollen
-void rita_boll(int x, int y, uint8_t farg)
-{
-    for (int y_skillnad = 0; y_skillnad < BALL_SIZE; y_skillnad++) {
-        for (int x_skillnad = 0; x_skillnad < BALL_SIZE; x_skillnad++) {
-            rita_pixel(x + x_skillnad, y + y_skillnad, farg);
-        }
-    }
-}
 // Rita bara delen som har flyttats
 void uppdatera_paddel(int x, int old_y, int new_y)
 {
