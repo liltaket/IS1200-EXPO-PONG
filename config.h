@@ -1,3 +1,5 @@
+// These constants were created together during the lab sessions.
+
 #define SCREEN_WIDTH  320
 #define SCREEN_HEIGHT 240
 
