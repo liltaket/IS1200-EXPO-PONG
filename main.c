@@ -214,8 +214,8 @@ int main(void)
 {
     reset_score();
     clear_screen();
-    rita_paddel(left_x, left_y, VITT);
-    rita_paddel(right_x, right_y, VITT);
+    rita_fyrkant(left_x, left_y, PADDLE_WIDTH, PADDLE_HEIGHT, VITT);
+    rita_fyrkant(right_x, right_y, PADDLE_WIDTH, PADDLE_HEIGHT, VITT);
 
     while (1) {
         uint32_t sw = read_switches();
@@ -237,7 +237,7 @@ int main(void)
         int old_right_y = right_y;
 
         // Sudda gamla bollen innan vi flyttar den
-        rita_boll(ball_x, ball_y, SVART);
+        rita_fyrkant(ball_x, ball_y, BALL_SIZE, BALL_SIZE, SVART);
 
         move_paddles(sw);
         clamp_paddles();
@@ -251,7 +251,7 @@ int main(void)
         check_paddle_collision();
         check_goal();
 
-        rita_boll(ball_x, ball_y, VITT);
+        rita_fyrkant(ball_x, ball_y, BALL_SIZE, BALL_SIZE, VITT);
 
 
         // Lite väntan innan nästa frame
