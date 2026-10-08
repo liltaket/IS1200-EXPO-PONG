@@ -12,7 +12,7 @@
 // Switcharna
 #define SWITCHES (*(volatile uint32_t *)0x04000010)
 
-// Siffror till 7-segment
+// Siffror till 7-segment - LAB 3 CODE Bruno
 static const int digits[10] = {
     0xC0, // 0
     0xF9, // 1
@@ -26,7 +26,7 @@ static const int digits[10] = {
     0x90  // 9
 };
 
-// Startpositioner och poäng
+// Startpositioner och poäng tilsammans hittade värden
 int left_x = 10;
 int left_y = 100;
 
@@ -44,25 +44,23 @@ static int right_score = 0;
 
 // Krävs av boot.S, men vi kör utan interrupts
 
-void handle_interrupt(unsigned cause)
+void handle_interrupt(unsigned cause) //old
 {
-    (void)cause;
+    (void)cause; //berättar för kompilatorn att vi inte använder cause med flit
 }
 
 // Små hjälpfunktioner
 
 // Styr hur snabbt spelet går
-static void delay(void)
+static void delay(void)//Hampus
 {
-    for (volatile int i = 0; i < 50000; i++) {
-    }
+    for (volatile int i = 0; i < 50000; i++) {}
 }
 
 // Skriv en siffra på displayen
-void set_displays(int display_number, int value)
+void set_displays(int display_number, int value) // Hampus
 {
-    volatile int *display =
-        (volatile int *)(0x04000050 + display_number * 0x10);
+    volatile int *display = (volatile int *)(0x04000050 + display_number * 0x10);
 
     if (value == -1)
         *display = 0xFF;
@@ -71,7 +69,7 @@ void set_displays(int display_number, int value)
 }
 
 // Läs av switcharna
-static uint32_t read_switches(void)
+static uint32_t read_switches(void) //old / Hampus
 {
     return SWITCHES;
 }
@@ -79,7 +77,7 @@ static uint32_t read_switches(void)
 // Flytta paddlar och boll
 
 // Spelarnas knappar flyttar paddlarna
-static void move_paddles(uint32_t sw)
+static void move_paddles(uint32_t sw) //Hampus
 {
     if (sw & (1u << 8))
         left_y -= PADDLE_SPEED;
@@ -95,7 +93,7 @@ static void move_paddles(uint32_t sw)
 }
 
 // Håll paddlarna inom skärmen
-static void clamp_paddles(void)
+static void clamp_paddles(void) //Hampus
 {
     if (left_y < 0)
         left_y = 0;
@@ -111,7 +109,7 @@ static void clamp_paddles(void)
 }
 
 // Move the ball
-static void move_ball(void)
+static void move_ball(void) //Hampus
 {
     ball_x += ball_dx;
     ball_y += ball_dy;
@@ -120,7 +118,7 @@ static void move_ball(void)
 // Kolla krockar
 
 // Studsa mot tak och golv
-static void check_wall_collision(void)
+static void check_wall_collision(void) //Hampus
 {
     if (ball_y <= 0) {
         ball_y = 0;
@@ -134,7 +132,7 @@ static void check_wall_collision(void)
 }
 
 // Studsa mot paddlarna
-static void check_paddle_collision(void)
+static void check_paddle_collision(void) //Hampus
 {
     if (ball_dx < 0 &&
         ball_x <= left_x + PADDLE_WIDTH &&
@@ -158,7 +156,7 @@ static void check_paddle_collision(void)
 // Poäng och omstart
 
 // Ny boll i mitten, slumpa riktning
-static void reset_ball()
+static void reset_ball() //Bruno
 {
     static uint8_t rng = 73;
     rng = (uint8_t)(rng * 17u + 43u);
@@ -173,14 +171,14 @@ static void reset_ball()
     }
 }
 
-static void update_score_display(int score, int display)
+static void update_score_display(int score, int display) //Bruno
 {
     set_displays(display, score % 10);
     set_displays(display + 1, (score / 10) % 10);
 }
 
 // Börja om poängen
-static void reset_score()
+static void reset_score()//Bruno
 {
     left_score = 0;
     right_score = 0;
@@ -189,7 +187,7 @@ static void reset_score()
 }
 
 // Ge poäng när bollen går ut
-static void check_goal(void)
+static void check_goal(void)//Bruno
 {
     if (ball_x < 0) {
         right_score++;
@@ -212,7 +210,7 @@ static void check_goal(void)
         reset_ball();
     }
 }
-static void update_frame(uint32_t sw)
+static void update_frame(uint32_t sw)//Bruno
 {
     int old_left_y = left_y;
     int old_right_y = right_y;
@@ -239,7 +237,7 @@ static void update_frame(uint32_t sw)
 
 // Själva spelet
 
-int main(void)
+int main(void) //Tilsammans pusslat
 {
     reset_score();
     set_displays(2, -1);
