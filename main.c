@@ -242,6 +242,8 @@ static void update_frame(uint32_t sw)
 int main(void)
 {
     reset_score();
+    set_displays(2, -1);
+    set_displays(3, -1);
     clear_screen();
     rita_fyrkant(left_x, left_y, PADDLE_WIDTH, PADDLE_HEIGHT, VITT);
     rita_fyrkant(right_x, right_y, PADDLE_WIDTH, PADDLE_HEIGHT, VITT);
@@ -251,8 +253,6 @@ int main(void)
 
         if (sw & (1u << 6))
             reset_score();
-            set_displays(2, -1);
-            set_displays(3, -1);
 
         if (sw & (1u << 7)) {
             delay();
