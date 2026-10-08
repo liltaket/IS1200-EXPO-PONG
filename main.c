@@ -212,12 +212,7 @@ static void check_goal(void)
 
 int main(void)
 {
-    // Nollor på displayerna från start
-    set_displays(0, 0);
-    set_displays(1, 0);
-    set_displays(4, 0);
-    set_displays(5, 0);
-
+    reset_score();
     clear_screen();
     rita_paddel(left_x, left_y, VITT);
     rita_paddel(right_x, right_y, VITT);
