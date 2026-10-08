@@ -208,6 +208,31 @@ static void check_goal(void)
         reset_ball();
     }
 }
+static void update_frame(uint32_t sw)
+{
+    int old_left_y = left_y;
+    int old_right_y = right_y;
+
+    // Sudda gamla bollen
+    rita_fyrkant(ball_x, ball_y, BALL_SIZE, BALL_SIZE, SVART);
+
+    // Uppdatera paddlarna
+    move_paddles(sw);
+    clamp_paddles();
+
+    uppdatera_paddel(left_x, old_left_y, left_y);
+    uppdatera_paddel(right_x, old_right_y, right_y);
+
+    // Uppdatera bollen
+    move_ball();
+    check_wall_collision();
+    check_paddle_collision();
+    check_goal();
+
+    // Rita bollen på nya positionen
+    rita_fyrkant(ball_x, ball_y, BALL_SIZE, BALL_SIZE, VITT);
+}
+
 // Själva spelet
 
 int main(void)
@@ -233,28 +258,7 @@ int main(void)
             continue;
         }
 
-        int old_left_y = left_y;
-        int old_right_y = right_y;
-
-        // Sudda gamla bollen innan vi flyttar den
-        rita_fyrkant(ball_x, ball_y, BALL_SIZE, BALL_SIZE, SVART);
-
-        move_paddles(sw);
-        clamp_paddles();
-
-        uppdatera_paddel(left_x, old_left_y, left_y);
-        uppdatera_paddel(right_x, old_right_y, right_y);
-
-        move_ball();
-
-        check_wall_collision();
-        check_paddle_collision();
-        check_goal();
-
-        rita_fyrkant(ball_x, ball_y, BALL_SIZE, BALL_SIZE, VITT);
-
-
-        // Lite väntan innan nästa frame
+        update_frame(sw)
         delay();
     }
 
