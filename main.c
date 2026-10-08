@@ -258,7 +258,7 @@ int main(void)
             continue;
         }
 
-        update_frame(sw)
+        update_frame(sw);
         delay();
     }
 
