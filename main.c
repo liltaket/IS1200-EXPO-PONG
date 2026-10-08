@@ -170,13 +170,19 @@ static void reset_ball()
     }
 }
 
+static void update_score_display(int score, int display)
+{
+    set_displays(display, score % 10);
+    set_displays(display + 1, (score / 10) % 10);
+}
+
 // Börja om poängen
 static void reset_score()
 {
     left_score = 0;
     right_score = 0;
-    update_score_display(0, 0)
-    update_score_display(0, 0)
+    update_score_display(0, 0);
+    update_score_display(0, 4);
 }
 
 // Ge poäng när bollen går ut
@@ -188,9 +194,7 @@ static void check_goal(void)
         if (right_score > 99)
             right_score = 0;
 
-        set_displays(0, right_score % 10);
-        set_displays(1, (right_score / 10) % 10);
-        update_score_display(right_score, 0)
+        update_score_display(right_score, 0);
 
         reset_ball();
     }
@@ -204,12 +208,6 @@ static void check_goal(void)
         update_score_display(left_score, 4);
         reset_ball();
     }
-}
-
-static void update_score_display(int score, int display)
-{
-    set_displays(display, score % 10);
-    set_displays(display + 1, (score / 10) % 10);
 }
 static void update_frame(uint32_t sw)
 {
