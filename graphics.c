@@ -26,7 +26,7 @@ void clear_screen(void)
 }
 
 // Draw the paddles and the ball
-void rita_fyrkant(int x, int y, size_x, size_y, uint8_t farg)
+void rita_fyrkant(int x, int y, int size_x, int size_y, uint8_t farg)
 {
     for (int dy = 0; dy < size_y; dy++) {
         for (int dx = 0; dx < size_x; dx++) {
