@@ -9,6 +9,8 @@
 #define BALL_SPEED_X  1
 #define BALL_SPEED_Y  1
 
+#define WIN_SCORE 5
+
 // Använder RRR GGG BB  
 #define SVART 0x00 
 #define VITT 0xFF
