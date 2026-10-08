@@ -44,3 +44,26 @@ void rita_boll(int x, int y, uint8_t farg)
         }
     }
 }
+// Rita bara delen som har flyttats
+void uppdatera_paddel(int x, int old_y, int new_y)
+{
+    if (new_y > old_y) {
+        for (int y = old_y; y < new_y; y++)
+            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
+                rita_pixel(x + xoff, y, SVART);
+
+        for (int y = old_y + PADDLE_HEIGHT;
+             y < new_y + PADDLE_HEIGHT; y++)
+            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
+                rita_pixel(x + xoff, y, VITT);
+    } else if (new_y < old_y) {
+        for (int y = new_y + PADDLE_HEIGHT;
+             y < old_y + PADDLE_HEIGHT; y++)
+            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
+                rita_pixel(x + xoff, y, SVART);
+
+        for (int y = new_y; y < old_y; y++)
+            for (int xoff = 0; xoff < PADDLE_WIDTH; xoff++)
+                rita_pixel(x + xoff, y, VITT);
+    }
+}
