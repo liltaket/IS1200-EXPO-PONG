@@ -253,7 +253,7 @@ int main(void)
             continue;
         }
 
-        if (left_score >= 5 || right_score >= 5) {
+        if (left_score >= WIN_SCORE || right_score >= WIN_SCORE) {
             delay();
             continue;
         }
