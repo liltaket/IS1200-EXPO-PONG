@@ -64,7 +64,10 @@ void set_displays(int display_number, int value)
     volatile int *display =
         (volatile int *)(0x04000050 + display_number * 0x10);
 
-    *display = digits[value];
+    if (value == -1)
+        *display = 0xFF;
+    else
+        *display = digits[value];
 }
 
 // Läs av switcharna
@@ -248,6 +251,8 @@ int main(void)
 
         if (sw & (1u << 6))
             reset_score();
+            set_displays(2, -1);
+            set_displays(3, -1);
 
         if (sw & (1u << 7)) {
             delay();
