@@ -1,4 +1,3 @@
-
 #include <stdint.h>
 #include "config.h"
 #include "graphics.h"
@@ -7,7 +6,7 @@
 #define VGA_BUFFER ((volatile uint8_t *)0x08000000)
 
 // Rita en pixel på skärmen
-void rita_pixel(int x, int y, uint8_t farg)
+void rita_pixel(int x, int y, uint8_t farg) //hampus
 {
     if (x < 0 || x >= SCREEN_WIDTH || y < 0 || y >= SCREEN_HEIGHT)
         return;
@@ -16,7 +15,7 @@ void rita_pixel(int x, int y, uint8_t farg)
 }
 
 // Gör hela skärmen svart
-void clear_screen(void)
+void clear_screen(void) //hampus
 {
     for (int y = 0; y < SCREEN_HEIGHT; y++) {
         for (int x = 0; x < SCREEN_WIDTH; x++) {
@@ -26,7 +25,7 @@ void clear_screen(void)
 }
 
 // Draw the paddles and the ball
-void rita_fyrkant(int x, int y, int size_x, int size_y, uint8_t farg)
+void rita_fyrkant(int x, int y, int size_x, int size_y, uint8_t farg) //Bruno
 {
     for (int dy = 0; dy < size_y; dy++) {
         for (int dx = 0; dx < size_x; dx++) {
@@ -36,7 +35,7 @@ void rita_fyrkant(int x, int y, int size_x, int size_y, uint8_t farg)
 }
 
 // Rita bara delen som har flyttats
-void uppdatera_paddel(int x, int old_y, int new_y)
+void uppdatera_paddel(int x, int old_y, int new_y)//Bruno 
 {
     int skillnad = new_y - old_y;
 
