@@ -1,7 +1,6 @@
 //Hampus
-#ifndef GRAPHICS_H
+#ifndef GRAPHICS_H //checking if defined If Already defined ALL in the file is skipped
 #define GRAPHICS_H
-
 #include <stdint.h>
 
 void clear_screen(void);
