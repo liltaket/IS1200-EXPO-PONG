@@ -7,11 +7,7 @@
 
 #include <stdint.h>
 #include "config.h"
-
-void clear_screen(void);
-void rita_pixel(int x, int y, uint8_t farg);
-void rita_paddel(int x, int y, uint8_t farg);
-void rita_boll(int x, int y, uint8_t farg);
+#include "graphics.h"
 
 // Switcharna
 #define SWITCHES (*(volatile uint32_t *)0x04000010)
