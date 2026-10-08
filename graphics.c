@@ -1,6 +1,7 @@
 
 #include <stdint.h>
 #include "config.h"
+#include "graphics.h"
 
 // VGA framebuffer
 #define VGA_BUFFER ((volatile uint8_t *)0x08000000)
