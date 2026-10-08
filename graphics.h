@@ -7,5 +7,6 @@ void clear_screen(void);
 void rita_pixel(int x, int y, uint8_t farg);
 void rita_paddel(int x, int y, uint8_t farg);
 void rita_boll(int x, int y, uint8_t farg);
+void uppdatera_paddel(int x, int old_y, int new_y);
 
 #endif
