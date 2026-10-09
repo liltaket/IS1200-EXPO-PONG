@@ -9,6 +9,23 @@
 #include "config.h"
 #include "graphics.h"
 
+#define TIMER_STATUS  (*(volatile uint32_t *)0x04000020)
+#define TIMER_CONTROL (*(volatile uint32_t *)0x04000024)
+#define TIMER_PERIODL (*(volatile uint32_t *)0x04000028)
+#define TIMER_PERIODH (*(volatile uint32_t *)0x0400002C)
+
+
+static void init_timer(void)
+{
+    uint32_t period = 300000; // 10 ms vid 30 MHz
+
+    TIMER_CONTROL = 8; // Stoppa timern
+    TIMER_PERIODL = (period - 1) & 0xFFFF;
+    TIMER_PERIODH = (period - 1) >> 16;
+    TIMER_STATUS = 0;
+    TIMER_CONTROL = 6; // Start + continuous
+}
+
 // Switcharna
 #define SWITCHES (*(volatile uint32_t *)0x04000010)
 
@@ -51,10 +68,11 @@ void handle_interrupt(unsigned cause) //old
 
 // Små hjälpfunktioner
 
-// Styr hur snabbt spelet går
-static void delay(void)//Hampus
+// dealy med timern 
+static void delay(void)
 {
-    for (volatile int i = 0; i < 50000; i++) {}
+    while (!(TIMER_STATUS & 1)) {}
+    TIMER_STATUS = 0;
 }
 
 // Skriv en siffra på displayen
@@ -245,7 +263,9 @@ int main(void) //Tilsammans pusslat
     clear_screen();
     rita_fyrkant(left_x, left_y, PADDLE_WIDTH, PADDLE_HEIGHT, VITT);
     rita_fyrkant(right_x, right_y, PADDLE_WIDTH, PADDLE_HEIGHT, VITT);
-
+   
+    init_timer();
+   
     while (1) {
         uint32_t sw = read_switches();
 
