@@ -133,6 +133,42 @@ static void move_ball(void) //Hampus
     ball_y += ball_dy;
 }
 
+static void uppdatera_boll(void) //Bruno
+{
+    int old_x = ball_x;
+    int old_y = ball_y;
+
+    move_ball();
+    check_wall_collision();
+    check_paddle_collision();
+    check_goal();
+
+    int dx = ball_x - old_x;
+    int dy = ball_y - old_y;
+
+    // Om bollen hoppat till en helt ny position
+    if (dx >= BALL_SIZE || dx <= -BALL_SIZE ||
+        dy >= BALL_SIZE || dy <= -BALL_SIZE) {
+        rita_fyrkant(old_x, old_y, BALL_SIZE, BALL_SIZE, SVART);
+    }
+    else {
+        // Sudda kanten i X-led
+        if (dx > 0)
+            rita_fyrkant(old_x, old_y, dx, BALL_SIZE, SVART);
+        else if (dx < 0)
+            rita_fyrkant(old_x + BALL_SIZE + dx, old_y, -dx, BALL_SIZE, SVART);
+
+        // Sudda kanten i Y-led
+        if (dy > 0)
+            rita_fyrkant(old_x, old_y, BALL_SIZE, dy, SVART);
+        else if (dy < 0)
+            rita_fyrkant(old_x, old_y + BALL_SIZE + dy, BALL_SIZE, -dy, SVART);
+    }
+
+    // Rita bollen på nya positionen
+    rita_fyrkant(ball_x, ball_y, BALL_SIZE, BALL_SIZE, VITT);
+}
+
 // Kolla krockar
 
 // Studsa mot tak och golv
@@ -228,13 +264,11 @@ static void check_goal(void)//Bruno
         reset_ball();
     }
 }
-static void update_frame(uint32_t sw)//Bruno
+
+static void update_frame(uint32_t sw) //Bruno
 {
     int old_left_y = left_y;
     int old_right_y = right_y;
-
-    // Sudda gamla bollen
-    rita_fyrkant(ball_x, ball_y, BALL_SIZE, BALL_SIZE, SVART);
 
     // Uppdatera paddlarna
     move_paddles(sw);
@@ -244,13 +278,7 @@ static void update_frame(uint32_t sw)//Bruno
     uppdatera_paddel(right_x, old_right_y, right_y);
 
     // Uppdatera bollen
-    move_ball();
-    check_wall_collision();
-    check_paddle_collision();
-    check_goal();
-
-    // Rita bollen på nya positionen
-    rita_fyrkant(ball_x, ball_y, BALL_SIZE, BALL_SIZE, VITT);
+    uppdatera_boll();
 }
 
 // Själva spelet
